@@ -15,7 +15,7 @@
 
   "items": {
     "COMMAND_1": {
-      "title": { "default": "Command One" },
+      "title": { "default": "Command Export" },
       "iconImageUrl": "icons/request.png",
       "type": "command"
     },
