@@ -4,26 +4,22 @@ import { Log } from "@microsoft/sp-core-library";
 import {
   BaseListViewCommandSet,
   Command,
-  ListViewAccessor,
   IListViewCommandSetListViewUpdatedParameters,
   IListViewCommandSetExecuteEventParameters,
   RowAccessor,
 } from "@microsoft/sp-listview-extensibility";
 import { Dialog } from "@microsoft/sp-dialog";
 import { sp } from "@pnp/sp/presets/all";
-import * as xlsx from "xlsx";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import "@pnp/sp/views";
-import { IRelatedItem } from "@pnp/sp/related-items";
 import {
   SPHttpClient,
   SPHttpClientResponse,
   ISPHttpClientOptions,
 } from "@microsoft/sp-http";
-import { Papa } from "papaparse";
-import { ICamlQuery } from "@pnp/sp/lists";
+
 /**
  * If your command set uses the ClientSideComponentProperties JSON input,
  * it will be deserialized into the BaseExtension.properties object.
@@ -37,7 +33,7 @@ export interface ICustomButtonCommandSetProperties {
 
 const LOG_SOURCE: string = "CustomButtonCommandSet";
 
-/**** generating random number test code ****/
+/********************************** Generating random number for UploadId **********************************/
 var dateObj = new Date();
 var month = dateObj.getUTCMonth() + 1; //months from 1-12
 var day = dateObj.getUTCDate();
@@ -53,18 +49,6 @@ const newRandNum =
   Math.floor(Math.random() * 999999) +
   5;
 console.log("newRandNum", newRandNum);
-
-/* const varValues = sp.web.lists
-  .getByTitle("MRF")
-  .items.getById(22080)
-  .fieldValuesAsText.get()
-  .then(function (data) {
-    //Populate all field values for the List Item
-    for (var k in data) {
-      console.log(k + " - " + data[k]);
-    }
-  });
-console.log("varValues", varValues); */
 
 export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICustomButtonCommandSetProperties> {
   context: any;
@@ -87,43 +71,22 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     }
   }
 
+  /********************************** Function to get data fromparticular view of a list **********************************/
   private async viewData() {
-    //const items = sp.web.lists.getByTitle("MRF");
-
-    // we can use this 'list' variable to execute more queries on the list:
-    //const r = sp.web.lists.getByTitle("FileUpload").items();
-
-    /*     const uploadFolder = sp.web.lists.getByTitle("FileUpload").items.add({
-      Title: "MileageAPFile_TEST",
-      //Name:fileName,
-    });
-    console.log("uploadFolder", uploadFolder); */
-
     var url = this.context.pageContext.web.serverRelativeUrl;
     //console.log("url", url);
-    const listPath = "https://pdsb1.sharepoint.com/sites/Mileage";
+    //const listPath = "https://pdsb1.sharepoint.com/sites/Mileage";
     const folderName = "FileUpload";
     var newURL = url + "/" + folderName;
-    var varContent="";
-    //console.log("url", newURL);
+    var varContent = "";
 
-/*     const varResult = sp.web.lists
-      .getByTitle("MRF")
-      .views.getByTitle("UploadFile")
-      .fields.get()
-      .then(function (data) {
-        // console.log("dataNew", data);
-        //return data.ViewData;
-      });
- */
-    //const varResult1 = "apples,apples,apples";
-
-    const allListitems = await sp.web.lists
+/*     const allListitems = await sp.web.lists
       .getByTitle("MRF")
       .items.getById(22079)
       .select(
         "ItemID,FISScriptV2,UploadStatus,Employee_x0020_Name,CreatedDateOnly,Desc1,Group_x0020_Code,ID,ChargeCode,StartDate,Total_x0020_Cost,Status,UploadID,Employee_x0020_Group,WorkFlowStage"
-      ).expand("FieldValuesAsText")
+      )
+      .expand("FieldValuesAsText")
       .get()
       .then((v) => {
         console.log("Hello", v);
@@ -131,28 +94,21 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
       .catch((e) => {
         console.log("Data insufficient!", e);
       });
-    console.table(allListitems);
+    console.table(allListitems); */
 
-    const xml =
-      "<View><ViewFields><FieldRef Name='FISScriptV2' /></ViewFields><RowLimit>5</RowLimit></View>";
- 
-/*     const tempVar = sp.web.lists
-      .getByTitle("MRF")
-      .getItemsByCAMLQuery({ ViewXml: xml })
-      .then((res: SPHttpClientResponse) => {
-        //return res;
-        console.log("HI", res);
-      }); */
-
+    // const xml =
+    // "<View><ViewFields><FieldRef Name='FISScriptV2' /></ViewFields><RowLimit>5</RowLimit></View>";
+   const varFileName= "MileageAPFile_"+`${newRandNum}.csv`;
+   //console.log('navpreet',varFileName);
     //const tempVar = sp.web.getFileByServerRelativeUrl("/sites/Mileage/FileUpload/testNewData.csv").setContent(allListitems);
     const newUpload = sp.web
       .getFolderByServerRelativeUrl(newURL)
-      .files.add("testDataNew123.csv", File, true)
+      .files.add(varFileName, File, true)
       .then(async (data) => {
         //console.log('hello',data);
         alert("File uploaded sucessfully");
         const newVar = sp.web
-          .getFileByServerRelativeUrl(`${newURL}/testDataNew123.csv`)
+          .getFileByServerRelativeUrl(`${newURL}/${varFileName}`)
           .setContent(varContent);
         data.file.getItem().then((item) => {
           item.update({
@@ -160,41 +116,118 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           });
         });
       });
-      /***thi is new */
-      const executeJson = (endpointUrl, payload) => {
-        const opt: ISPHttpClientOptions = { method: 'GET' };
-        if (payload) {
-          opt.method = 'POST';
-          opt.body = JSON.stringify(payload);
-        }
-        return this.context.spHttpClient.fetch(endpointUrl, SPHttpClient.configurations.v1, opt);
-      };
-      const getListItems = (webUrl,listTitle, queryText) => {
-        var viewXml = '<View><Query>' + queryText + '</Query></View>';
-        var endpointUrl = webUrl + "/_api/web/lists/getbytitle('" + listTitle + "')/getitems"; 
-        var queryPayload = {'query' : { 'ViewXml' : viewXml } };
-        return executeJson(endpointUrl, queryPayload);
-      };
-      const getListViewItems = (webUrl,listTitle,viewTitle) => {
-        var endpointUrl = webUrl + "/_api/web/lists/getByTitle('MRF')/Views/getbytitle('" + viewTitle + "')/ViewQuery";
-        return executeJson(endpointUrl, null).then((response: SPHttpClientResponse) => { return response.json(); })
-        .then(data => {   
-              
+/****************Retrieve a list view using sharepoint fremework Typecript API **********************************/
+    const executeJson = (endpointUrl, payload) => {
+      const opt: ISPHttpClientOptions = { method: "GET" };
+      if (payload) {
+        opt.method = "POST";
+        opt.body = JSON.stringify(payload);
+      }
+      return this.context.spHttpClient.fetch(
+        endpointUrl,
+        SPHttpClient.configurations.v1,
+        opt
+      );
+    };
+    const getListItems = (webUrl, listTitle, queryText) => {
+      var viewXml = "<View><Query>" + queryText + "</Query></View>";
+      var endpointUrl =
+        webUrl + "/_api/web/lists/getbytitle('" + listTitle + "')/getitems";
+      var queryPayload = { query: { ViewXml: viewXml } };
+      return executeJson(endpointUrl, queryPayload);
+    };
+    const getListViewItems = (webUrl, listTitle, viewTitle) => {
+      var endpointUrl =
+        webUrl +
+        "/_api/web/lists/getByTitle('MRF')/Views/getbytitle('" +
+        viewTitle +
+        "')/ViewQuery";
+      return executeJson(endpointUrl, null)
+        .then((response: SPHttpClientResponse) => {
+          return response.json();
+        })
+        .then((data) => {
           var viewQuery = data.value;
-          return getListItems(webUrl,listTitle,viewQuery); 
+          return getListItems(webUrl, listTitle, viewQuery);
         });
-      };
-  
- /*** getting items and values from a view of a list***/     
-      const url2 = "https://pdsb1.sharepoint.com/sites/Mileage";
-      getListViewItems(url2,'MRF','UploadFile')
-      .then((response: SPHttpClientResponse) => { return response.json(); })
-      .then(response=>{
+    };
+
+    /*** getting items and values from a view of a list***/
+    const url2 = "https://pdsb1.sharepoint.com/sites/Mileage";
+    getListViewItems(url, "MRF", "UploadFile")
+      .then((response: SPHttpClientResponse) => {
+        return response.json();
+      })
+      .then((response) => {
+        varContent =
+          varContent +
+          "FISScriptV2" +
+          "," +
+          "UploadStatus" +
+          "," +
+          "EmployeeName" +
+          "," +
+          "ItemID" +
+          "," +
+          "CreatedDateOnly" +
+          "," +
+          "Desc1" +
+          "," +
+          "GroupCode" +
+          "," +
+          "ID" +
+          "," +
+          "ChargeCode" +
+          "," +
+          "EndDate" +
+          "," +
+          "StartDate" +
+          "," +
+          "ModifiedBy" +
+          "," +
+          "TotalCost" +
+          "," +
+          "UploadID" +
+          "," +
+          "Status" +
+          "\n";
         for (var item of response.value) {
-          console.log("item",item);
-          varContent=varContent + item.ItemID+","+ item.FISScriptV2 +'\r\n';
+          console.log("item", item);
+          varContent =
+            varContent +
+            `"${item.FISScriptV2}"` +
+            "," +
+            `"${item.UploadStatus}"` +
+            "," +
+            `"${item.Employee_x0020_Name}"` +
+            "," +
+            `"${item.ItemID}"` +
+            "," +
+            `"${item.CreatedDateOnly}"` +
+            "," +
+            `"${item.Desc1}"` +
+            "," +
+            `"${item.Group_x0020_Code}"` +
+            "," +
+            `"${item.ID}"` +
+            "," +
+            `"${item.ChargeCode}"` +
+            "," +
+            `"${item.OData_EndDate}"` +
+            "," +
+            `"${item.StartDate}"` +
+            "," +
+            `"${item.Modified}"` +
+            "," +
+            `"${item.Total_x0020_Cost}"` +
+            "," +
+            `"${item.UploadID}"` +
+            "," +
+            `"${item.Status}"` +
+            "," +
+            "\n";
         }
-        console.log('Its new',varContent);
+        console.log("Its new", varContent);
       });
     /*  
     const result = await items.views
