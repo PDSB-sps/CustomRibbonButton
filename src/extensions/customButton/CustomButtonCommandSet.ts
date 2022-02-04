@@ -49,11 +49,10 @@ const newRandNum =
   Math.floor(Math.random() * 999999) +
   5;
 console.log("newRandNum", newRandNum);
-const varTemp= sp.web.lists.getByTitle("MRF").items.get()
+//const varTemp= sp.web.lists.getByTitle("MRF").items.get()
 
 export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICustomButtonCommandSetProperties> {
-  context: any;
-  domElement: any;
+  public context: any;
 
   @override
   public onInit(): Promise<void> {
@@ -70,6 +69,14 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
       // This command should be hidden unless exactly one row is selected.
       compareOneCommand.visible = event.selectedRows.length === 0;
     }
+  }
+
+  private deleteListItems() {
+    //Get all items of list
+    let varDeleteList = sp.web.lists
+      .getByTitle("MRF")
+      .views.getByTitle("TestView")
+      .fields.removeAll();
   }
 
   /********************************** Function to get data from particular view of a list **********************************/
@@ -111,12 +118,12 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         opt
       );
     };
- 
+
     const getListItems = (webUrl, listTitle, queryText) => {
       var viewXml = "<View><Query>" + queryText + "</Query></View>";
       var endpointUrl =
         webUrl + "/_api/web/lists/getbytitle('" + listTitle + "')/getitems";
-        //console.log('hii',endpointUrl);
+      //console.log('hii',endpointUrl);
       var queryPayload = { query: { ViewXml: viewXml } };
       return executeJson(endpointUrl, queryPayload);
     };
@@ -139,7 +146,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
 
     /************************************** getting items and values from a view of a list**************************************/
     //const url2 = "https://pdsb1.sharepoint.com/sites/Mileage";
-    
+
     getListViewItems(url, "MRF", "UploadFile")
       .then((response: SPHttpClientResponse) => {
         return response.json();
@@ -184,11 +191,12 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             varContent +
             `"${item.FISScriptV2}"` +
             "," +
-            `"${item.UploadStatus}"` +
+            "Completed" +
+            //`"${item.UploadStatus}"` +
             "," +
             `"${item.Employee_x0020_Name}"` +
             "," +
-           `"${item.ItemID}"` +
+            `"${item.ItemID}"` +
             "," +
             `"${item.CreatedDateOnly}"` +
             "," +
@@ -196,7 +204,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             "," +
             `"${item.Group_x0020_Code}"` +
             "," +
-             `"${item.ID}"` +
+            `"${item.ID}"` +
             "," +
             `"${item.ChargeCode}"` +
             "," +
@@ -208,25 +216,52 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             "," +
             `"${item.Total_x0020_Cost}"` +
             "," +
-            `"${item.UploadID}"` +
+            `"${newRandNum}"` +
+            // `"${item.UploadID}"` +
             "," +
             `"${item.Status}"` +
-            "," + 
+            "," +
             "\n";
         }
-       // console.log("Its new", varContent);
+        // console.log("Its new", varContent);
       });
   }
 
-  /**** function to update Status and UploadID ****/
+  /**** function to update Status and UploadID on Completed button****/
   private async updateListItem(itemID: any) {
     let list = sp.web.lists.getByTitle("MRF");
     const i = await list.items.getById(itemID).update({
       Status: "Exported", //column to be updated in the list
       UploadID: newRandNum,
     });
-   
   }
+
+  /**** function to update Status and UploadID on Pending button****/
+  private async updateListItemPending(itemID: any) {
+    let list = sp.web.lists.getByTitle("MRF");
+    const i = await list.items.getById(itemID).update({
+      Status: "Not Started", //column to be updated in the list
+      UploadID: newRandNum,
+    });
+  }
+
+  /**** function to update Status and UploadID on Pending button****/
+  private async updateListItemDeferred(itemID: any) {
+    let list = sp.web.lists.getByTitle("MRF");
+    const i = await list.items.getById(itemID).update({
+      Status: "Deferred", //column to be updated in the list
+      UploadID: newRandNum,
+    });
+  }
+
+  /**** function to update Status and UploadID on Uplaod button****/
+    private async updateListItemUpload(itemID: any) {
+      let list = sp.web.lists.getByTitle("MRF");
+      const i = await list.items.getById(itemID).update({
+        Status: "Completed", //column to be updated in the list
+        UploadID: newRandNum,
+      });
+    }
 
   @override
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
@@ -243,28 +278,65 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
             const listId = ` ${row.getValueByName("ID")}`;
             //console.log("listId", listId);
-            this.updateListItem(listId);;
+            this.updateListItem(listId);
           });
         }
+        window.setTimeout(() => {
+          Dialog.alert("Record updated successfully ");
+        }, 5000);
 
-        window.setTimeout( () =>{
-          Dialog.alert("Record updated successfully "); 
-       }, 5000);
- 
         // this.viewData();
         //  Dialog.alert(`${this.properties.sampleTextTwo}`);
         break;
 
-        /********************************Pending Button-----------------------------------------****************************/
-        case "COMMAND_3":
+      /********************************Pending Button-----------------------------------------****************************/
+      case "COMMAND_3":
+        if (event.selectedRows.length > 0) {
+          // Check the selected rows
+          event.selectedRows.forEach((row: RowAccessor, index: number) => {
+            const listId = ` ${row.getValueByName("ID")}`;
+            //console.log("listId", listId);
+            this.updateListItemPending(listId);
+          });
+        }
+        window.setTimeout(() => {
+          Dialog.alert("Record updated successfully ");
+        }, 5000);
+
+        //this.deleteListItems();
         Dialog.alert("This is Pending Button");
-          break;
+        break;
 
-        /********************************Deffered Button-----------------------------------------****************************/
-          case "COMMAND_4":
-          Dialog.alert("This is Deffered button");
-            break;
+      /********************************Deffered Button-----------------------------------------****************************/
+      case "COMMAND_4":
+        if (event.selectedRows.length > 0) {
+          // Check the selected rows
+          event.selectedRows.forEach((row: RowAccessor, index: number) => {
+            const listId = ` ${row.getValueByName("ID")}`;
+            //console.log("listId", listId);
+            this.updateListItemDeferred(listId);
+          });
+        } 
 
+        window.setTimeout(() => {
+
+          Dialog.alert("Record updated successfully ");
+        }, 5000);
+        Dialog.alert("This is Deffered button");
+        break;
+            /********************************Upload Button-----------------------------------------****************************/
+      case "COMMAND_5":
+        if (event.selectedRows.length > 0) {
+          // Check the selected rows
+          event.selectedRows.forEach((row: RowAccessor, index: number) => {
+            const listId = ` ${row.getValueByName("ID")}`;
+            //console.log("listId", listId);
+            this.updateListItemUpload(listId);
+          });
+        } 
+        Dialog.alert("This is Upload button");
+        this.viewData()
+        break;
       default:
         throw new Error("Unknown command");
     }

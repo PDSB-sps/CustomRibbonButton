@@ -22,16 +22,21 @@
     },
     "COMMAND_2": {
       "title": { "default": "Completed" },
-      "iconImageUrl": "https://www.citypng.com/public/uploads/preview/-316225907691vr4nvazfz.png",
+      "iconImageUrl": "https://portal.peelschools.org/Gallery/PublishingImages/icon-validation1.png",
       "type": "command"
     },
     "COMMAND_3": {
       "title": { "default": "Pending" },
-      "iconImageUrl": "https://shoonia.github.io/1x1/favicon.png",
+      "iconImageUrl": "https://portal.peelschools.org/Gallery/PublishingImages/icon-validation0.png",
       "type": "command"
     },
     "COMMAND_4": {
-      "title": { "default": "Deffered" },
+      "title": { "default": "Deferred" },
+      "iconImageUrl": "https://portal.peelschools.org/Gallery/PublishingImages/icon-deffered.png",
+      "type": "command"
+    },
+    "COMMAND_5": {
+      "title": { "default": "Upload" },
       "iconImageUrl": "https://shoonia.github.io/1x1/favicon.png",
       "type": "command"
     }
