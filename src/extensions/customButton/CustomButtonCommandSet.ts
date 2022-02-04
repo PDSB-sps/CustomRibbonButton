@@ -49,6 +49,7 @@ const newRandNum =
   Math.floor(Math.random() * 999999) +
   5;
 console.log("newRandNum", newRandNum);
+const varTemp= sp.web.lists.getByTitle("MRF").items.get()
 
 export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICustomButtonCommandSetProperties> {
   context: any;
@@ -67,46 +68,27 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     const compareOneCommand: Command = this.tryGetCommand("COMMAND_1");
     if (compareOneCommand) {
       // This command should be hidden unless exactly one row is selected.
-      compareOneCommand.visible = event.selectedRows.length === 1;
+      compareOneCommand.visible = event.selectedRows.length === 0;
     }
   }
 
-  /********************************** Function to get data fromparticular view of a list **********************************/
+  /********************************** Function to get data from particular view of a list **********************************/
   private async viewData() {
     var url = this.context.pageContext.web.serverRelativeUrl;
     //console.log("url", url);
-    //const listPath = "https://pdsb1.sharepoint.com/sites/Mileage";
+
     const folderName = "FileUpload";
     var newURL = url + "/" + folderName;
     var varContent = "";
+    const varFileName = "MileageAPFile_" + `${newRandNum}.csv`;
+    //console.log('navpreet',varFileName);
 
-/*     const allListitems = await sp.web.lists
-      .getByTitle("MRF")
-      .items.getById(22079)
-      .select(
-        "ItemID,FISScriptV2,UploadStatus,Employee_x0020_Name,CreatedDateOnly,Desc1,Group_x0020_Code,ID,ChargeCode,StartDate,Total_x0020_Cost,Status,UploadID,Employee_x0020_Group,WorkFlowStage"
-      )
-      .expand("FieldValuesAsText")
-      .get()
-      .then((v) => {
-        console.log("Hello", v);
-      })
-      .catch((e) => {
-        console.log("Data insufficient!", e);
-      });
-    console.table(allListitems); */
-
-    // const xml =
-    // "<View><ViewFields><FieldRef Name='FISScriptV2' /></ViewFields><RowLimit>5</RowLimit></View>";
-   const varFileName= "MileageAPFile_"+`${newRandNum}.csv`;
-   //console.log('navpreet',varFileName);
-    //const tempVar = sp.web.getFileByServerRelativeUrl("/sites/Mileage/FileUpload/testNewData.csv").setContent(allListitems);
     const newUpload = sp.web
       .getFolderByServerRelativeUrl(newURL)
       .files.add(varFileName, File, true)
       .then(async (data) => {
         //console.log('hello',data);
-        alert("File uploaded sucessfully");
+        Dialog.alert("File uploaded sucessfully");
         const newVar = sp.web
           .getFileByServerRelativeUrl(`${newURL}/${varFileName}`)
           .setContent(varContent);
@@ -116,7 +98,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           });
         });
       });
-/****************Retrieve a list view using sharepoint fremework Typecript API **********************************/
+    /****************Retrieve a list view using sharepoint fremework Typecript API **********************************/
     const executeJson = (endpointUrl, payload) => {
       const opt: ISPHttpClientOptions = { method: "GET" };
       if (payload) {
@@ -129,13 +111,16 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         opt
       );
     };
+ 
     const getListItems = (webUrl, listTitle, queryText) => {
       var viewXml = "<View><Query>" + queryText + "</Query></View>";
       var endpointUrl =
         webUrl + "/_api/web/lists/getbytitle('" + listTitle + "')/getitems";
+        //console.log('hii',endpointUrl);
       var queryPayload = { query: { ViewXml: viewXml } };
       return executeJson(endpointUrl, queryPayload);
     };
+
     const getListViewItems = (webUrl, listTitle, viewTitle) => {
       var endpointUrl =
         webUrl +
@@ -152,8 +137,9 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         });
     };
 
-    /*** getting items and values from a view of a list***/
-    const url2 = "https://pdsb1.sharepoint.com/sites/Mileage";
+    /************************************** getting items and values from a view of a list**************************************/
+    //const url2 = "https://pdsb1.sharepoint.com/sites/Mileage";
+    
     getListViewItems(url, "MRF", "UploadFile")
       .then((response: SPHttpClientResponse) => {
         return response.json();
@@ -190,9 +176,10 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           "UploadID" +
           "," +
           "Status" +
+          "," +
           "\n";
         for (var item of response.value) {
-          console.log("item", item);
+          //console.log("item", item);
           varContent =
             varContent +
             `"${item.FISScriptV2}"` +
@@ -201,7 +188,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             "," +
             `"${item.Employee_x0020_Name}"` +
             "," +
-            `"${item.ItemID}"` +
+           `"${item.ItemID}"` +
             "," +
             `"${item.CreatedDateOnly}"` +
             "," +
@@ -209,7 +196,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             "," +
             `"${item.Group_x0020_Code}"` +
             "," +
-            `"${item.ID}"` +
+             `"${item.ID}"` +
             "," +
             `"${item.ChargeCode}"` +
             "," +
@@ -224,34 +211,12 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             `"${item.UploadID}"` +
             "," +
             `"${item.Status}"` +
-            "," +
+            "," + 
             "\n";
         }
-        console.log("Its new", varContent);
+       // console.log("Its new", varContent);
       });
-    /*  
-    const result = await items.views
-      .getById("FEB744C4-9F87-4CE8-A6E0-7399A2E42CBC")
-      .fields();
-    console.log("viewResult", result);
-
-    const result2 =sp.web.lists.getByTitle("MRF").views.getByTitle("UploadFile").select("Title").get().then(function(data){
-      console.log("View Title : " + data.Title);  
-    
-    })
-    console.log("viewResult2", result2); */
   }
-  /*     const test = fetch(
-      "https://pdsb1.sharepoint.com/sites/mileage/_vti_bin/owssvr.dll?CS=109&Using=_layouts/query.iqy&List={AD6BB111-B3EB-46ED-B07B-24D46B73C88F}&View={FEB744C4-9F87-4CE8-A6E0-7399A2E42CBC}&CacheControl=1"
-    )
-      .then((data) => {
-        console.log("its here", data.body);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    console.log("test", test);
-  } */
 
   /**** function to update Status and UploadID ****/
   private async updateListItem(itemID: any) {
@@ -260,30 +225,46 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
       Status: "Exported", //column to be updated in the list
       UploadID: newRandNum,
     });
+   
   }
+
   @override
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
     switch (event.itemId) {
-      /****----------------------------------------------------------------------------------------------------- ****/
+      /********************************Upload Button---------------------------------------****************************/
       case "COMMAND_1":
-        //this.getViewQueryForList;
         this.viewData();
         // Dialog.alert(`${this.properties.sampleTextOne}`);
         break;
-      /****----------------------------------------------------------------------------------------------------- ****/
+      /********************************Completed Button-----------------------------------------****************************/
       case "COMMAND_2":
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
             const listId = ` ${row.getValueByName("ID")}`;
-            console.log("listId", listId);
-            this.updateListItem(listId);
+            //console.log("listId", listId);
+            this.updateListItem(listId);;
           });
         }
 
+        window.setTimeout( () =>{
+          Dialog.alert("Record updated successfully "); 
+       }, 5000);
+ 
+        // this.viewData();
         //  Dialog.alert(`${this.properties.sampleTextTwo}`);
-        /****----------------------------------------------------------------------------------------------------- ****/
         break;
+
+        /********************************Pending Button-----------------------------------------****************************/
+        case "COMMAND_3":
+        Dialog.alert("This is Pending Button");
+          break;
+
+        /********************************Deffered Button-----------------------------------------****************************/
+          case "COMMAND_4":
+          Dialog.alert("This is Deffered button");
+            break;
+
       default:
         throw new Error("Unknown command");
     }

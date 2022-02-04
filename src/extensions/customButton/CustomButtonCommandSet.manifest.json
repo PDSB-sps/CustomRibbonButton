@@ -15,13 +15,24 @@
 
   "items": {
     "COMMAND_1": {
-      "title": { "default": "Command Export" },
-      "iconImageUrl": "icons/request.png",
+      "title": { "default": "Generate Upload File -FIS" ,"color":"red"},
+      "iconImageUrl": "https://shoonia.github.io/1x1/favicon.png",
       "type": "command"
+  
     },
     "COMMAND_2": {
-      "title": { "default": "Command Two" },
-      "iconImageUrl": "icons/cancel.png",
+      "title": { "default": "Completed" },
+      "iconImageUrl": "https://www.citypng.com/public/uploads/preview/-316225907691vr4nvazfz.png",
+      "type": "command"
+    },
+    "COMMAND_3": {
+      "title": { "default": "Pending" },
+      "iconImageUrl": "https://shoonia.github.io/1x1/favicon.png",
+      "type": "command"
+    },
+    "COMMAND_4": {
+      "title": { "default": "Deffered" },
+      "iconImageUrl": "https://shoonia.github.io/1x1/favicon.png",
       "type": "command"
     }
   }
