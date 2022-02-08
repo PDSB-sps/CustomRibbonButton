@@ -57,6 +57,12 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   @override
   public onInit(): Promise<void> {
     Log.info(LOG_SOURCE, "Initialized CustomButtonCommandSet");
+/* 
+    // code to hide button
+    let newbutton: any = document.getElementsByName('New'); 
+    Dialog.alert("Its hidden");  
+    newbutton.style.display = "none";  
+   */
     return Promise.resolve();
   }
 
@@ -335,7 +341,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           });
         } 
         Dialog.alert("This is Upload button");
-        this.viewData()
+        this.viewData();
+
         break;
       default:
         throw new Error("Unknown command");
