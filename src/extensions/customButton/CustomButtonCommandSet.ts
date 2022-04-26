@@ -19,7 +19,7 @@ import {
   SPHttpClientResponse,
   ISPHttpClientOptions,
 } from "@microsoft/sp-http";
-
+import { SPPermission } from '@microsoft/sp-page-context';
 /**
  * If your command set uses the ClientSideComponentProperties JSON input,
  * it will be deserialized into the BaseExtension.properties object.
@@ -51,8 +51,10 @@ const newRandNum =
 console.log("newRandNum", newRandNum);
 //const varTemp= sp.web.lists.getByTitle("MRF").items.get()
 
+
 export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICustomButtonCommandSetProperties> {
   public context: any;
+
 
   @override
   public onInit(): Promise<void> {
@@ -60,9 +62,10 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
 /* 
     // code to hide button
     let newbutton: any = document.getElementsByName('New'); 
-    Dialog.alert("Its hidden");  
+    
     newbutton.style.display = "none";  
    */
+    Dialog.alert("Its hidden");  
     return Promise.resolve();
   }
 
@@ -70,13 +73,26 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   public onListViewUpdated(
     event: IListViewCommandSetListViewUpdatedParameters
   ): void {
+    let isFullControl = this.checkFullControlPermission();
+    console.log('isFullControl',isFullControl);
     const compareOneCommand: Command = this.tryGetCommand("COMMAND_1");
-    if (compareOneCommand) {
+  
+    if (isFullControl) {
       // This command should be hidden unless exactly one row is selected.
-      compareOneCommand.visible = event.selectedRows.length === 0;
+      compareOneCommand.visible = isFullControl === true
+      //this.checkFullControlPermission(compareOneCommand, SPPermission.editListItems);
+      //compareOneCommand.visible;
+      //alert('its visisble');
     }
+    
   }
 
+  private checkFullControlPermission = (): boolean => {
+    //Full Control group can add item to list/library and mange web.
+    let permission = new SPPermission(this.context.pageContext.web.permissions.value);
+    let isFullControl = permission.hasPermission(SPPermission.manageWeb);
+    return isFullControl;
+  }
   private deleteListItems() {
     //Get all items of list
     let varDeleteList = sp.web.lists
@@ -206,8 +222,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             "," +
             `"${item.CreatedDateOnly}"` +
             "," +
-            `"${item.Desc1}"` +
-            "," +
+            `"${item.Desc1}"`+
+           /* "," +
             `"${item.Group_x0020_Code}"` +
             "," +
             `"${item.ID}"` +
@@ -226,7 +242,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             // `"${item.UploadID}"` +
             "," +
             `"${item.Status}"` +
-            "," +
+            "," +*/
             "\n";
         }
         // console.log("Its new", varContent);
@@ -237,7 +253,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   private async updateListItem(itemID: any) {
     let list = sp.web.lists.getByTitle("MRF");
     const i = await list.items.getById(itemID).update({
-      Status: "Exported", //column to be updated in the list
+      Status: "Completed", //column to be updated in the list
       UploadID: newRandNum,
     });
   }
@@ -278,7 +294,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         // Dialog.alert(`${this.properties.sampleTextOne}`);
         break;
       /********************************Completed Button-----------------------------------------****************************/
-      case "COMMAND_2":
+      case "COMMAND_2": //Completed Button
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
@@ -296,7 +312,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         break;
 
       /********************************Pending Button-----------------------------------------****************************/
-      case "COMMAND_3":
+      case "COMMAND_3": //Pending Button
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
@@ -314,7 +330,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         break;
 
       /********************************Deffered Button-----------------------------------------****************************/
-      case "COMMAND_4":
+      case "COMMAND_4":  //Deferred Button
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
@@ -331,7 +347,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         Dialog.alert("This is Deffered button");
         break;
             /********************************Upload Button-----------------------------------------****************************/
-      case "COMMAND_5":
+      case "COMMAND_5": //Upload button
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
