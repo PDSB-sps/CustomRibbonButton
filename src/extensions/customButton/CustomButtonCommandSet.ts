@@ -65,7 +65,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     
     newbutton.style.display = "none";  
    */
-    Dialog.alert("Its hidden");  
+    Dialog.alert("Its version 3");  
     return Promise.resolve();
   }
 
@@ -79,7 +79,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   
     if (isFullControl) {
       // This command should be hidden unless exactly one row is selected.
-      compareOneCommand.visible = isFullControl === true
+      compareOneCommand.visible = isFullControl === true;
       //this.checkFullControlPermission(compareOneCommand, SPPermission.editListItems);
       //compareOneCommand.visible;
       //alert('its visisble');
