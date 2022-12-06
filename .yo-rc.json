@@ -3,7 +3,7 @@
     "isCreatingSolution": true,
     "environment": "spo",
     "version": "1.12.1",
-    "libraryName": "custom-button",
+    "libraryName": "custom-button-v2",
     "libraryId": "dec46642-c735-4ee5-910d-7ee46607c4ed",
     "packageManager": "npm",
     "isDomainIsolated": false,
