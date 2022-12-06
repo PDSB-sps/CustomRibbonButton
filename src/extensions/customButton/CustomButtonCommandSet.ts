@@ -65,7 +65,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     
     newbutton.style.display = "none";  
    */
-    Dialog.alert("Its version 3");  
+   // Dialog.alert("Its version 3");  
     return Promise.resolve();
   }
 

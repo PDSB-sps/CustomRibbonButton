@@ -1,3 +1,4 @@
+
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx/command-set-extension-manifest.schema.json",
 
@@ -16,28 +17,28 @@
   "items": {
     "COMMAND_1": {
       "title": { "default": "Generate Upload File -FIS" ,"color":"red"},
-      "iconImageUrl": "https://shoonia.github.io/1x1/favicon.png",
+      "iconImageUrl": "https://pdsb1.sharepoint.com/:i:/r/sites/My-Site/SiteAssets/icons/Basic/1054942%20-%20upload.png?csf=1&web=1&e=v1wxuj",
       "type": "command"
   
     },
     "COMMAND_2": {
       "title": { "default": "Completed" },
-      "iconImageUrl": "https://portal.peelschools.org/Gallery/PublishingImages/icon-validation1.png",
+      "iconImageUrl": "https://pdsb1.sharepoint.com/_catalogs/masterpage/PDSB/StyleLibrary/Images/icon-validation1.png",
       "type": "command"
     },
     "COMMAND_3": {
       "title": { "default": "Pending" },
-      "iconImageUrl": "https://portal.peelschools.org/Gallery/PublishingImages/icon-validation0.png",
+      "iconImageUrl": "https://pdsb1.sharepoint.com/_catalogs/masterpage/PDSB/StyleLibrary/Images/icon-validation0.png",
       "type": "command"
     },
     "COMMAND_4": {
       "title": { "default": "Deferred" },
-      "iconImageUrl": "https://portal.peelschools.org/Gallery/PublishingImages/icon-deffered.png",
+      "iconImageUrl": "https://pdsb1.sharepoint.com/_catalogs/masterpage/PDSB/StyleLibrary/Images/icon-deffered.png",
       "type": "command"
     },
     "COMMAND_5": {
       "title": { "default": "Upload" },
-      "iconImageUrl": "https://shoonia.github.io/1x1/favicon.png",
+      "iconImageUrl": "https://pdsb1.sharepoint.com/:i:/r/sites/My-Site/SiteAssets/icons/Basic/1054942%20-%20upload.png?csf=1&web=1&e=v1wxuj",
       "type": "command"
     }
   }
