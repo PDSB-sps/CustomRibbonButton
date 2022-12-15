@@ -19,7 +19,7 @@ import {
   SPHttpClientResponse,
   ISPHttpClientOptions,
 } from "@microsoft/sp-http";
-import { SPPermission } from '@microsoft/sp-page-context';
+import { SPPermission } from "@microsoft/sp-page-context";
 /**
  * If your command set uses the ClientSideComponentProperties JSON input,
  * it will be deserialized into the BaseExtension.properties object.
@@ -51,21 +51,19 @@ const newRandNum =
 console.log("newRandNum", newRandNum);
 //const varTemp= sp.web.lists.getByTitle("MRF").items.get()
 
-
 export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICustomButtonCommandSetProperties> {
   public context: any;
-
 
   @override
   public onInit(): Promise<void> {
     Log.info(LOG_SOURCE, "Initialized CustomButtonCommandSet");
-/* 
+    /* 
     // code to hide button
     let newbutton: any = document.getElementsByName('New'); 
     
     newbutton.style.display = "none";  
    */
-   // Dialog.alert("Its version 3");  
+    // Dialog.alert("Its version 3");
     return Promise.resolve();
   }
 
@@ -73,6 +71,30 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   public onListViewUpdated(
     event: IListViewCommandSetListViewUpdatedParameters
   ): void {
+    var Libraryurl = this.context.pageContext.list.title;
+    console.log("Libraryurl", Libraryurl);
+    const compareOneCommand: Command = this.tryGetCommand("COMMAND_1");
+    const compareOneCommand2: Command = this.tryGetCommand("COMMAND_2");
+    const compareOneCommand3: Command = this.tryGetCommand("COMMAND_3");
+    const compareOneCommand4: Command = this.tryGetCommand("COMMAND_4");
+    const compareOneCommand5: Command = this.tryGetCommand("COMMAND_4");
+
+    if (
+      compareOneCommand ||
+      compareOneCommand2 ||
+      compareOneCommand3 ||
+      compareOneCommand4 ||
+      compareOneCommand5
+    ) {
+      // This command make the button visible for the below Librayurl list only.
+      compareOneCommand.visible = Libraryurl == "MRF";
+      compareOneCommand2.visible = Libraryurl == "MRF";
+      compareOneCommand3.visible = Libraryurl == "MRF";
+      compareOneCommand4.visible = Libraryurl == "MRF";
+      compareOneCommand5.visible = Libraryurl == "MRF";
+    }
+
+    /*
     let isFullControl = this.checkFullControlPermission();
     console.log('isFullControl',isFullControl);
     const compareOneCommand: Command = this.tryGetCommand("COMMAND_1");
@@ -82,17 +104,18 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
       compareOneCommand.visible = isFullControl === true;
       //this.checkFullControlPermission(compareOneCommand, SPPermission.editListItems);
       //compareOneCommand.visible;
-      //alert('its visisble');
-    }
-    
+      //alert('its visible');
+    }*/
   }
 
   private checkFullControlPermission = (): boolean => {
     //Full Control group can add item to list/library and mange web.
-    let permission = new SPPermission(this.context.pageContext.web.permissions.value);
+    let permission = new SPPermission(
+      this.context.pageContext.web.permissions.value
+    );
     let isFullControl = permission.hasPermission(SPPermission.manageWeb);
     return isFullControl;
-  }
+  };
   private deleteListItems() {
     //Get all items of list
     let varDeleteList = sp.web.lists
@@ -110,14 +133,13 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     var newURL = url + "/" + folderName;
     var varContent = "";
     const varFileName = "MileageAPFile_" + `${newRandNum}.csv`;
-    //console.log('navpreet',varFileName);
 
     const newUpload = sp.web
       .getFolderByServerRelativeUrl(newURL)
       .files.add(varFileName, File, true)
       .then(async (data) => {
         //console.log('hello',data);
-        Dialog.alert("File uploaded sucessfully");
+        Dialog.alert("Generated upload file successfully ");
         const newVar = sp.web
           .getFileByServerRelativeUrl(`${newURL}/${varFileName}`)
           .setContent(varContent);
@@ -127,7 +149,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           });
         });
       });
-    /****************Retrieve a list view using sharepoint fremework Typecript API **********************************/
+    /****************Retrieve a list view using sharepoint framework Typescript API **********************************/
     const executeJson = (endpointUrl, payload) => {
       const opt: ISPHttpClientOptions = { method: "GET" };
       if (payload) {
@@ -213,8 +235,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             varContent +
             `"${item.FISScriptV2}"` +
             "," +
-            "Completed" +
-            //`"${item.UploadStatus}"` +
+           // "Completed" +
+            `"${item.UploadStatus}"` +
             "," +
             `"${item.Employee_x0020_Name}"` +
             "," +
@@ -222,8 +244,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             "," +
             `"${item.CreatedDateOnly}"` +
             "," +
-            `"${item.Desc1}"`+
-           /* "," +
+            `"${item.Desc1}"` +
+           "," +
             `"${item.Group_x0020_Code}"` +
             "," +
             `"${item.ID}"` +
@@ -238,11 +260,11 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             "," +
             `"${item.Total_x0020_Cost}"` +
             "," +
-            `"${newRandNum}"` +
-            // `"${item.UploadID}"` +
+           // `"${newRandNum}"` +
+            `"${item.UploadID}"` +
             "," +
             `"${item.Status}"` +
-            "," +*/
+            "," +
             "\n";
         }
         // console.log("Its new", varContent);
@@ -277,18 +299,18 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   }
 
   /**** function to update Status and UploadID on Uplaod button****/
-    private async updateListItemUpload(itemID: any) {
-      let list = sp.web.lists.getByTitle("MRF");
-      const i = await list.items.getById(itemID).update({
-        Status: "Completed", //column to be updated in the list
-        UploadID: newRandNum,
-      });
-    }
+  private async updateListItemUpload(itemID: any) {
+    let list = sp.web.lists.getByTitle("MRF");
+    const i = await list.items.getById(itemID).update({
+      Status: "Completed", //column to be updated in the list
+      UploadID: newRandNum,
+    });
+  }
 
   @override
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
     switch (event.itemId) {
-      /********************************Upload Button---------------------------------------****************************/
+      /********************************Generate Upload File -FIS Button---------------------------------------****************************/
       case "COMMAND_1":
         this.viewData();
         // Dialog.alert(`${this.properties.sampleTextOne}`);
@@ -304,7 +326,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           });
         }
         window.setTimeout(() => {
-          Dialog.alert("Record updated successfully ");
+          Dialog.alert("Status updated to completed successfully ");
         }, 5000);
 
         // this.viewData();
@@ -322,15 +344,15 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           });
         }
         window.setTimeout(() => {
-          Dialog.alert("Record updated successfully ");
+          Dialog.alert("Status updated to pending successfully ");
         }, 5000);
 
         //this.deleteListItems();
-        Dialog.alert("This is Pending Button");
+        // Dialog.alert("This is Pending Button");
         break;
 
       /********************************Deffered Button-----------------------------------------****************************/
-      case "COMMAND_4":  //Deferred Button
+      case "COMMAND_4": //Deferred Button
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
@@ -338,15 +360,14 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             //console.log("listId", listId);
             this.updateListItemDeferred(listId);
           });
-        } 
+        }
 
         window.setTimeout(() => {
-
-          Dialog.alert("Record updated successfully ");
+          Dialog.alert("Status updated to deferred successfully ");
         }, 5000);
-        Dialog.alert("This is Deffered button");
+        // Dialog.alert("This is Deffered button");
         break;
-            /********************************Upload Button-----------------------------------------****************************/
+      /********************************Upload Button-----------------------------------------****************************/
       case "COMMAND_5": //Upload button
         if (event.selectedRows.length > 0) {
           // Check the selected rows
@@ -355,8 +376,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
             //console.log("listId", listId);
             this.updateListItemUpload(listId);
           });
-        } 
-        Dialog.alert("This is Upload button");
+        }
+        Dialog.alert("File uploaded successfully");
         this.viewData();
 
         break;
