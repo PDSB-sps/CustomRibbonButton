@@ -71,9 +71,12 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   public onListViewUpdated(
     event: IListViewCommandSetListViewUpdatedParameters
   ): void {
-    var Libraryurl = this.context.pageContext.list.title;
+    console.log('Published on Dec/19/2022');
+   // const compareOneCommand: Command = this.tryGetCommand("COMMAND_1");
+   /* var Libraryurl = this.context.pageContext.list.title;
     console.log("Libraryurl", Libraryurl);
-    const compareOneCommand: Command = this.tryGetCommand("COMMAND_1");
+   
+
     const compareOneCommand2: Command = this.tryGetCommand("COMMAND_2");
     const compareOneCommand3: Command = this.tryGetCommand("COMMAND_3");
     const compareOneCommand4: Command = this.tryGetCommand("COMMAND_4");
@@ -94,7 +97,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
       compareOneCommand5.visible = Libraryurl == "MRF";
     }
 
-    /*
+    */
     let isFullControl = this.checkFullControlPermission();
     console.log('isFullControl',isFullControl);
     const compareOneCommand: Command = this.tryGetCommand("COMMAND_1");
@@ -102,10 +105,10 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     if (isFullControl) {
       // This command should be hidden unless exactly one row is selected.
       compareOneCommand.visible = isFullControl === true;
-      //this.checkFullControlPermission(compareOneCommand, SPPermission.editListItems);
+    //  this.checkFullControlPermission(compareOneCommand, SPPermission.editListItems);
       //compareOneCommand.visible;
       //alert('its visible');
-    }*/
+    }
   }
 
   private checkFullControlPermission = (): boolean => {
@@ -139,7 +142,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
       .files.add(varFileName, File, true)
       .then(async (data) => {
         //console.log('hello',data);
-        Dialog.alert("Generated upload file successfully ");
+        Dialog.alert("Generated and uploaded file successfully ");
         const newVar = sp.web
           .getFileByServerRelativeUrl(`${newURL}/${varFileName}`)
           .setContent(varContent);
@@ -230,12 +233,12 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           "," +
           "\n";
         for (var item of response.value) {
-          //console.log("item", item);
+          console.log("item", item);
           varContent =
             varContent +
             `"${item.FISScriptV2}"` +
             "," +
-           // "Completed" +
+           //"Exported" +
             `"${item.UploadStatus}"` +
             "," +
             `"${item.Employee_x0020_Name}"` +
@@ -269,6 +272,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         }
         // console.log("Its new", varContent);
       });
+
+
   }
 
   /**** function to update Status and UploadID on Completed button****/
@@ -302,7 +307,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   private async updateListItemUpload(itemID: any) {
     let list = sp.web.lists.getByTitle("MRF");
     const i = await list.items.getById(itemID).update({
-      Status: "Completed", //column to be updated in the list
+      Status: "Exported", //column to be updated in the list
       UploadID: newRandNum,
     });
   }
@@ -312,9 +317,23 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     switch (event.itemId) {
       /********************************Generate Upload File -FIS Button---------------------------------------****************************/
       case "COMMAND_1":
+        if (event.selectedRows.length > 0) {
+          // Check the selected rows
+          event.selectedRows.forEach((row: RowAccessor, index: number) => {
+            const listId = ` ${row.getValueByName("ID")}`;
+            //console.log("listId", listId);
+            this.updateListItemUpload(listId);
+          });
+        }
+        window.setTimeout(() => {
+          Dialog.alert("Status updated to Exported successfully ");
+        }, 5000);
+        // Dialog.alert("This is Deffered button");
         this.viewData();
-        // Dialog.alert(`${this.properties.sampleTextOne}`);
         break;
+        //Dialog.alert("File uploaded successfully");
+      
+    
       /********************************Completed Button-----------------------------------------****************************/
       case "COMMAND_2": //Completed Button
         if (event.selectedRows.length > 0) {
