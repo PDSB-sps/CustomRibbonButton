@@ -35,11 +35,12 @@
       "title": { "default": "Deferred" },
       "iconImageUrl": "https://pdsb1.sharepoint.com/_catalogs/masterpage/PDSB/StyleLibrary/Images/icon-deffered.png",
       "type": "command"
-    },
+    }
+    /*,
     "COMMAND_5": {
       "title": { "default": "Upload" },
       "iconImageUrl": "https://pdsb1.sharepoint.com/:i:/r/sites/My-Site/SiteAssets/icons/Basic/1054942%20-%20upload.png?csf=1&web=1&e=v1wxuj",
       "type": "command"
-    }
+    }*/
   }
 }
