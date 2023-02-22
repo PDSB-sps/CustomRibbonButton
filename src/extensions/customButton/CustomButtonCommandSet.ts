@@ -9,11 +9,12 @@ import {
   RowAccessor,
 } from "@microsoft/sp-listview-extensibility";
 import { Dialog } from "@microsoft/sp-dialog";
-import { sp } from "@pnp/sp/presets/all";
+import { sp,Web } from "@pnp/sp/presets/all";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import "@pnp/sp/views";
+
 import {
   SPHttpClient,
   SPHttpClientResponse,
@@ -49,6 +50,8 @@ const newRandNum =
   Math.floor(Math.random() * 999999) +
   5;
 console.log("newRandNum", newRandNum);
+console.log(dateObj.toDateString()); 
+var setNewDate=dateObj.toDateString();
 //const varTemp= sp.web.lists.getByTitle("MRF").items.get()
 
 export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICustomButtonCommandSetProperties> {
@@ -57,6 +60,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   @override
   public onInit(): Promise<void> {
     Log.info(LOG_SOURCE, "Initialized CustomButtonCommandSet");
+    sp.setup({spfxContext: this.context,sp: {baseUrl: this.context.pageContext.web.absoluteUrl }});
     /* 
     // code to hide button
     let newbutton: any = document.getElementsByName('New'); 
@@ -71,7 +75,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   public onListViewUpdated(
     event: IListViewCommandSetListViewUpdatedParameters
   ): void {
-    console.log('Published on Dec/19/2022');
+    console.log('Published on Feb/08/2023');
    // const compareOneCommand: Command = this.tryGetCommand("COMMAND_1");
    /* var Libraryurl = this.context.pageContext.list.title;
     console.log("Libraryurl", Libraryurl);
@@ -278,10 +282,15 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
 
   /**** function to update Status and UploadID on Completed button****/
   private async updateListItem(itemID: any) {
+    //sp.setup({spfxContext: this.context });
+    
+   // const web= Web(this.context.pageContext.web);
+   
+    console.log("sp",sp);
     let list = sp.web.lists.getByTitle("MRF");
     const i = await list.items.getById(itemID).update({
       Status: "Completed", //column to be updated in the list
-      UploadID: newRandNum,
+      UploadID: setNewDate,
     });
   }
 
@@ -341,13 +350,13 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
             const listId = ` ${row.getValueByName("ID")}`;
             //console.log("listId", listId);
-            this.updateListItem(listId);
+            this.updateListItem(listId).then(()=>{
+              Dialog.alert("Status updated to completed successfully ");
+            });
+
           });
         }
-        window.setTimeout(() => {
-          Dialog.alert("Status updated to completed successfully ");
-        }, 5000);
-
+      
         // this.viewData();
         //  Dialog.alert(`${this.properties.sampleTextTwo}`);
         break;
