@@ -4,7 +4,7 @@
   "https": true,
   "serveConfigurations": {
     "default": {
-     "pageUrl": "https://pdsb1.sharepoint.com/sites/Mileage/SitePages/Create%20FIS%20Upload%20File.aspx",
+     "pageUrl": "https://pdsb1.sharepoint.com/sites/Mileage/Backups/MRF/Forms/MyItems.aspx",
      // "pageUrl": "https://pdsb1.sharepoint.com/sites/Mileage/SitePages/FIS-Payment-Create-upload-File-MRF.aspx",
       "customActions": {
         "3b598a73-4480-4fe4-8223-69d55c580287": {
