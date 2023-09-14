@@ -3,7 +3,6 @@ import { override } from "@microsoft/decorators";
 import { Log } from "@microsoft/sp-core-library";
 import {
   BaseListViewCommandSet,
-  Command,
   IListViewCommandSetListViewUpdatedParameters,
   IListViewCommandSetExecuteEventParameters,
   RowAccessor,
@@ -20,7 +19,7 @@ import {
   SPHttpClientResponse,
   ISPHttpClientOptions,
 } from "@microsoft/sp-http";
-import { SPPermission } from "@microsoft/sp-page-context";
+
 /**
  * If your command set uses the ClientSideComponentProperties JSON input,
  * it will be deserialized into the BaseExtension.properties object.
@@ -53,25 +52,9 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     event: IListViewCommandSetListViewUpdatedParameters
   ): void {
     
-    let isFullControl = this.checkFullControlPermission();
-    const compareOneCommand: Command = this.tryGetCommand("COMMAND_1");
-    if (isFullControl) {
-      // This command should be hidden unless exactly one row is selected.
-      compareOneCommand.visible = isFullControl === true;
-      //  this.checkFullControlPermission(compareOneCommand, SPPermission.editListItems);
-    }
+    
   }
-
-  private checkFullControlPermission = (): boolean => {
-    //Full Control group can add item to list/library and mange web.
-    let permission = new SPPermission(
-      this.context.pageContext.web.permissions.value
-    );
-    let isFullControl = permission.hasPermission(SPPermission.manageWeb);
-    return isFullControl;
-  };
-  
-
+  /**** Get data from particular view of a list ****/
   private async viewData() {
     //generate random number
     var dateObj = new Date();
