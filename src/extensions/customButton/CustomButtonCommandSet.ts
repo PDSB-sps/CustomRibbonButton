@@ -61,15 +61,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
 
   /**** Get data from particular view of a list ****/
   private async viewData() {
-    //generate random number
-    var dateObj = new Date();
-    var month = dateObj.getUTCMonth() + 1; //months from 1-12
-    var day = dateObj.getUTCDate();
-    var year = dateObj.getUTCFullYear();
-    const newRandNum =
-      year + "" + "" + month + "" + day + Math.floor(Math.random() * 99999) + 5;
-    console.log("newRandNum", newRandNum);
 
+    const newRandNum = new Date().toISOString().replace(/[^0-9]+/g, "") + Math.floor(Math.random() * 999);
     var url = this.context.pageContext.web.serverRelativeUrl;
     const folderName = "FileUpload";
     var newURL = url + "/" + folderName;
