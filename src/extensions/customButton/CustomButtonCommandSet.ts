@@ -48,12 +48,17 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   }
 
   @override
-  public onListViewUpdated(
-    event: IListViewCommandSetListViewUpdatedParameters
-  ): void {
-    
-    
+  public onListViewUpdated(event: IListViewCommandSetListViewUpdatedParameters): void {
+    // hide commands for other lists that are not MRF
+    if (window.location.href.toLowerCase().indexOf('/mrf/') === -1){
+      this.tryGetCommand("COMMAND_Upload").visible = false;
+      this.tryGetCommand("COMMAND_Completed").visible = false;
+      this.tryGetCommand("COMMAND_Pending").visible = false;
+      this.tryGetCommand("COMMAND_Deferred").visible = false;
+      //this.tryGetCommand("COMMAND_TestUpload").visible = false;
+    }
   }
+
   /**** Get data from particular view of a list ****/
   private async viewData() {
     //generate random number
