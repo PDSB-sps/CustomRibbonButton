@@ -218,8 +218,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   /**** Update Status (Completed, Not Started, Deferred, Exported) and UploadID ****/
   private async updateListItem(itemID: any, status: string, uploadId?: string) {
     const body = uploadId ? {Status: status, UploadID: uploadId} : {Status: status};
-    let list = sp.web.lists.getByTitle("MRF");
-    const i = await list.items.top(200).getById(itemID).update(body);
+    await sp.web.lists.getByTitle("MRF").items.getById(itemID).update(body);
   }
 
   @override
