@@ -15,29 +15,29 @@
   "requiresCustomScript": false,
 
   "items": {
-    "COMMAND_1": {
+    "COMMAND_Upload": {
       "title": { "default": "Generate Upload File -FIS" ,"color":"red"},
       "iconImageUrl": "https://pdsb1.sharepoint.com/:i:/r/sites/My-Site/SiteAssets/icons/Basic/1054942%20-%20upload.png?csf=1&web=1&e=v1wxuj",
       "type": "command"
   
     },
-    "COMMAND_2": {
+    "COMMAND_Completed": {
       "title": { "default": "Completed" },
       "iconImageUrl": "https://pdsb1.sharepoint.com/_catalogs/masterpage/PDSB/StyleLibrary/Images/icon-validation1.png",
       "type": "command"
     },
-    "COMMAND_3": {
+    "COMMAND_Pending": {
       "title": { "default": "Pending" },
       "iconImageUrl": "https://pdsb1.sharepoint.com/_catalogs/masterpage/PDSB/StyleLibrary/Images/icon-validation0.png",
       "type": "command"
     },
-    "COMMAND_4": {
+    "COMMAND_Deferred": {
       "title": { "default": "Deferred" },
       "iconImageUrl": "https://pdsb1.sharepoint.com/_catalogs/masterpage/PDSB/StyleLibrary/Images/icon-deffered.png",
       "type": "command"
     }
     ,
-    "COMMAND_5": {
+    "COMMAND_TestUpload": {
       "title": { "default": "Test Upload" },
       "iconImageUrl": "https://pdsb1.sharepoint.com/_catalogs/masterpage/PDSB/StyleLibrary/Images/active_pin.png",
       "type": "command"
