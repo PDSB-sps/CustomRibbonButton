@@ -507,7 +507,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
     switch (event.itemId) {
       /********************************Generate Upload File -FIS Button---------------------------------------****************************/
-      case "COMMAND_1":
+      case "COMMAND_Upload":
         this.viewData();
         /*  setTimeout(function(){
           location.reload();
@@ -517,7 +517,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
       //Dialog.alert("File uploaded successfully");
 
       /********************************Completed Button-----------------------------------------****************************/
-      case "COMMAND_2": //Completed Button
+      case "COMMAND_Completed": //Completed Button
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
@@ -535,7 +535,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         break;
 
       /********************************Pending Button-----------------------------------------****************************/
-      case "COMMAND_3": //Pending Button
+      case "COMMAND_Pending": //Pending Button
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
@@ -553,7 +553,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         break;
 
       /********************************Deffered Button-----------------------------------------****************************/
-      case "COMMAND_4": //Deferred Button
+      case "COMMAND_Deferred": //Deferred Button
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
