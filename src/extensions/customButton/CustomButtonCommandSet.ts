@@ -63,10 +63,10 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
   private async viewData() {
 
     const newRandNum = new Date().toISOString().replace(/[^0-9]+/g, "") + Math.floor(Math.random() * 999);
-    var url = this.context.pageContext.web.serverRelativeUrl;
+    const url = this.context.pageContext.web.serverRelativeUrl;
     const folderName = "FileUpload";
-    var newURL = url + "/" + folderName;
-    var varContent = "";
+    const newURL = url + "/" + folderName;
+    let varContent = "";
     const varFileName = "MileageAPFile_" + `${newRandNum}.csv`;
 
     // Read or Write to a list
@@ -84,15 +84,15 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     };
 
     const getListItems = (webUrl, listTitle, queryText) => {
-      var viewXml = "<View><Query>" + queryText + "</Query></View>";
-      var endpointUrl =
+      const viewXml = "<View><Query>" + queryText + "</Query></View>";
+      const endpointUrl =
         webUrl + "/_api/web/lists/getbytitle('" + listTitle + "')/getitems?$top=200";
-      var queryPayload = { query: { ViewXml: viewXml } };
+        const queryPayload = { query: { ViewXml: viewXml } };
       return executeJson(endpointUrl, queryPayload);
     };
 
     const getListViewItems = (webUrl, listTitle, viewTitle) => {
-      var endpointUrl =
+      const endpointUrl =
         webUrl +
         "/_api/web/lists/getByTitle('MRF')/Views/getbytitle('" +
         viewTitle +
@@ -102,7 +102,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           return response.json();
         })
         .then((data) => {
-          var viewQuery = data.value;
+          const viewQuery = data.value;
           return getListItems(webUrl, listTitle, viewQuery);
         });
     };
