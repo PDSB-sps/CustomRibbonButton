@@ -113,6 +113,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         varContent += listCols.join() + "\n"; 
 
         for (const item of response.value) {
+          // update the item Status & UploadID
+          this.updateListItem(item.ID, "Exported", newRandNum);
 
           // writing to Excel Rows
           for (const col of listCols){
@@ -122,14 +124,6 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           listRow = [];
         }
 
-        for (let j = 0; j <response.value.length; j++) {
-          const itemIDs = response.value[j].ID //.ID;
-          const list = sp.web.lists.getByTitle("MRF");
-          const i = list.items.top(200).getById(itemIDs).update({
-            Status: "Exported",
-            UploadID: newRandNum,
-          });
-        }
         const newUpload = sp.web
           .getFolderByServerRelativeUrl(newURL)
           .files.add(varFileName, File, true)
