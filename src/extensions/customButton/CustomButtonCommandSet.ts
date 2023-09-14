@@ -68,6 +68,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     const newURL = url + "/" + folderName;
     let varContent = "";
     const varFileName = "MileageAPFile_" + `${newRandNum}.csv`;
+    const listCols = ["FISScriptV2", "UploadStatus", "EmployeeName", "ItemID", "CreatedDateOnly", "Desc1", "GroupCode", "ChargeCode", "StartDate", "End_x0020_Date", "Approver", "TotalCost"];
+    let listRow = [];
 
     // Read or Write to a list
     const executeJson = async (endpointUrl, payload?) => {
@@ -106,62 +108,18 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         return response.json();
       })
       .then((response) => {
-        varContent =
-          varContent +
-          "FISScriptV2" +
-          "," +
-          "UploadStatus" +
-          "," +
-          "EmployeeName" +
-          "," +
-          "ItemID" +
-          "," +
-          "CreatedDateOnly" +
-          "," +
-          "Desc1" +
-          "," +
-          "GroupCode" +
-          "," +
-          "ChargeCode" +
-          "," +
-          "StartDate" +
-          "," +
-          "End_x0020_Date" +
-          "," +
-          "Approver" +
-          "," +
-          "TotalCost" +
-          "," +
-          "\n";
 
-        for (var item of response.value) {
-          varContent =
-            varContent +
-            `"${item.FISScriptV2}"` +
-            "," +
-            `"${item.UploadStatus}"` +
-            "," +
-            `"${item.Employee_x0020_Name}"` +
-            "," +
-            `"${item.ItemID}"` +
-            "," +
-            `"${item.CreatedDateOnly}"` +
-            "," +
-            `"${item.Desc1}"` +
-            "," +
-            `"${item.Group_x0020_Code}"` +
-            "," +
-            `"${item.ChargeCode}"` +
-            "," +
-            `"${item.StartDate}"` +
-            "," +
-            `"${item.End_x0020_Date}"` +
-            "," +
-            `"${item.Approver}"` +
-            "," +
-            `"${item.Total_x0020_Cost}"` +
-            "," +
-            "\n";
+        // Excel Header
+        varContent += listCols.join() + "\n"; 
+
+        for (const item of response.value) {
+
+          // writing to Excel Rows
+          for (const col of listCols){
+            listRow.push(item[col]);
+          }
+          varContent += listRow.join() + "\n";
+          listRow = [];
         }
 
         for (let j = 0; j <response.value.length; j++) {
