@@ -210,31 +210,16 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
               });
             });
           });
+
       });
   }
 
-  /**** function to update Status and UploadID on Completed button****/
-  private async updateListItem(itemID: any) {
-    let list = sp.web.lists.getByTitle("MRF");
-    const i = await list.items.top(200).getById(itemID).update({
-      Status: "Completed", //column to be updated in the list
-    });
-  }
 
-  /**** function to update Status and UploadID on Pending button****/
-  private async updateListItemPending(itemID: any) {
+  /**** Update Status (Completed, Not Started, Deferred, Exported) and UploadID ****/
+  private async updateListItem(itemID: any, status: string, uploadId?: string) {
+    const body = uploadId ? {Status: status, UploadID: uploadId} : {Status: status};
     let list = sp.web.lists.getByTitle("MRF");
-    const i = await list.items.getById(itemID).update({
-      Status: "Not Started", //column to be updated in the list
-    });
-  }
-
-  /**** function to update Status and UploadID on Pending button****/
-  private async updateListItemDeferred(itemID: any) {
-    let list = sp.web.lists.getByTitle("MRF");
-    const i = await list.items.getById(itemID).update({
-      Status: "Deferred", //column to be updated in the list
-    });
+    const i = await list.items.top(200).getById(itemID).update(body);
   }
 
   @override
@@ -248,7 +233,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
             const listItemId = ` ${row.getValueByName("ID")}`;
-            this.updateListItem(listItemId).then(() => {
+            this.updateListItem(listItemId, 'Completed').then(() => {
               location.reload();
             });
           });
@@ -259,7 +244,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
             const listItemId = ` ${row.getValueByName("ID")}`;
-            this.updateListItemPending(listItemId).then(() => {
+            this.updateListItem(listItemId, 'Not Started').then(() => {
               location.reload();
             });
           });
@@ -270,7 +255,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
             const listItemId = ` ${row.getValueByName("ID")}`;
-            this.updateListItemDeferred(listItemId).then(() => {
+            this.updateListItem(listItemId, 'Deferred').then(() => {
               location.reload();
             });
           });
