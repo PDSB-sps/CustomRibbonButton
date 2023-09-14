@@ -83,20 +83,15 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
       );
     };
 
-    const getListItems = (webUrl, listTitle, queryText) => {
+    const getListItems = async (webUrl: string, listTitle: string, queryText: string) => {
       const viewXml = "<View><Query>" + queryText + "</Query></View>";
-      const endpointUrl =
-        webUrl + "/_api/web/lists/getbytitle('" + listTitle + "')/getitems?$top=200";
-        const queryPayload = { query: { ViewXml: viewXml } };
+      const endpointUrl = webUrl + "/_api/web/lists/getbytitle('" + listTitle + "')/getitems?$top=200";
+      const queryPayload = { query: { ViewXml: viewXml } };
       return executeJson(endpointUrl, queryPayload);
     };
 
-    const getListViewItems = (webUrl, listTitle, viewTitle) => {
-      const endpointUrl =
-        webUrl +
-        "/_api/web/lists/getByTitle('MRF')/Views/getbytitle('" +
-        viewTitle +
-        "')/ViewQuery";
+    const getListViewItems = async (webUrl: string, listTitle: string, viewTitle: string) => {
+      const endpointUrl = webUrl + "/_api/web/lists/getByTitle('MRF')/Views/getbytitle('" + viewTitle +"')/ViewQuery";
       return executeJson(endpointUrl, null)
         .then((response: SPHttpClientResponse) => {
           return response.json();
