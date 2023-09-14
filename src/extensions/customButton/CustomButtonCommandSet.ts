@@ -247,8 +247,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
-            const listId = ` ${row.getValueByName("ID")}`;
-            this.updateListItem(listId).then(() => {
+            const listItemId = ` ${row.getValueByName("ID")}`;
+            this.updateListItem(listItemId).then(() => {
               location.reload();
             });
           });
@@ -258,8 +258,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
-            const listId = ` ${row.getValueByName("ID")}`;
-            this.updateListItemPending(listId).then(() => {
+            const listItemId = ` ${row.getValueByName("ID")}`;
+            this.updateListItemPending(listItemId).then(() => {
               location.reload();
             });
           });
@@ -269,8 +269,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
         if (event.selectedRows.length > 0) {
           // Check the selected rows
           event.selectedRows.forEach((row: RowAccessor, index: number) => {
-            const listId = ` ${row.getValueByName("ID")}`;
-            this.updateListItemDeferred(listId).then(() => {
+            const listItemId = ` ${row.getValueByName("ID")}`;
+            this.updateListItemDeferred(listItemId).then(() => {
               location.reload();
             });
           });
