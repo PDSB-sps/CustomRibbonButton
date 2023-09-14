@@ -103,6 +103,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           return getListItems(webUrl, listTitle, viewQuery);
         });
     };
+
+    // Getting items and values from a view of a list
     getListViewItems(url, "MRF", "UploadFile")
       .then((response: SPHttpClientResponse) => {
         return response.json();
@@ -124,14 +126,11 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           listRow = [];
         }
 
-        const newUpload = sp.web
-          .getFolderByServerRelativeUrl(newURL)
-          .files.add(varFileName, File, true)
+        // Writing to the Excel File
+        sp.web.getFolderByServerRelativeUrl(newURL).files.add(varFileName, File, true)
           .then(async (data) => {
-            Dialog.alert("Generated and uploaded file successfully ");
-            const newVar = sp.web
-              .getFileByServerRelativeUrl(`${newURL}/${varFileName}`)
-              .setContent(varContent);
+            Dialog.alert("Generated and uploaded file successfully");
+            sp.web.getFileByServerRelativeUrl(`${newURL}/${varFileName}`).setContent(varContent);
             data.file.getItem().then((item) => {
               item.update({
                 Title: "MileageTitle",
@@ -154,6 +153,7 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     switch (event.itemId) {
       case "COMMAND_Upload": // Generate Upload File -FIS Button
         this.viewData();
+        //Dialog.alert("File uploaded successfully");
         break;
       case "COMMAND_Completed": //Completed Button
         if (event.selectedRows.length > 0) {
