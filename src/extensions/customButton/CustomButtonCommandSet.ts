@@ -76,8 +76,8 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
     var varContent = "";
     const varFileName = "MileageAPFile_" + `${newRandNum}.csv`;
 
-    /****************Retrieve a list view using sharepoint framework Typescript API **********************************/
-    const executeJson = (endpointUrl, payload) => {
+    // Read or Write to a list
+    const executeJson = async (endpointUrl, payload?) => {
       const opt: ISPHttpClientOptions = { method: "GET" };
       if (payload) {
         opt.method = "POST";
