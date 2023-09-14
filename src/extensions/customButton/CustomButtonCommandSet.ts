@@ -103,6 +103,9 @@ export default class CustomButtonCommandSet extends BaseListViewCommandSet<ICust
           return getListItems(webUrl, listTitle, viewQuery);
         });
     };
+    
+    //executeJson(url + "/_api/web/lists/getByTitle('MRF')/items?$top=200&$filter=Status eq 'Completed' and UploadID eq '0'")
+    //getListViewItems(url, "MRF", "UploadFile")
 
     // Getting items and values from a view of a list
     getListViewItems(url, "MRF", "UploadFile")
